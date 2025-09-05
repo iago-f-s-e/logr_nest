@@ -1,4 +1,5 @@
 import { LogPattern } from './log-pattern';
+import { TriggerIn } from './trigger';
 
 /**
  * Data Transfer Object for error patterns
@@ -41,4 +42,11 @@ export interface ErrorPattern extends LogPattern {
      */
     kind: string;
   };
+}
+
+export interface RegisteredError {
+  error: any;
+  trigger: TriggerIn;
+  title: string;
+  params: any[];
 }

@@ -8,7 +8,7 @@ export function getErrorPattern(
   ...params: any[]
 ): ErrorPattern {
   return {
-    level: level,
+    level,
     message: error.message,
     timestamp: new Date().toISOString(),
     trigger: {

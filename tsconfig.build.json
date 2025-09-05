@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "strict": true,
+    "strictBindCallApply": true,
+    "alwaysStrict": true,
+  },
+  "exclude": ["src/examples", "./node_modules/*"]
+}

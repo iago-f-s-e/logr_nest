@@ -1,4 +1,5 @@
 import { TriggerIn } from '../../types';
+import { LogLevel } from '../enums';
 
 /**
  * Represents a logger service.
@@ -10,14 +11,16 @@ export interface LoggerService {
    * Logs an error.
    *
    * @param {any} error - The error object to be logged.
+   * @param {string} title - The title of the error.
    * @param {any[]} [params] - Additional parameters associated with the error (optional).
    * @returns {void}
    */
-  error(error: any, title: string, ...params: any[]): void;
+  error(error: any, title: string, level: LogLevel, ...params: any[]): void;
 
   /**
    * Logs an info.
    *
+   * @param {string} title - The title of the log.
    * @param {any[]} [params] - Additional parameters associated with the log (optional).
    * @returns {void}
    */
@@ -26,6 +29,7 @@ export interface LoggerService {
   /**
    * Logs a warning.
    *
+   * @param {string} title - The title of the log.
    * @param {any[]} [params] - Additional parameters associated with the log (optional).
    * @returns {void}
    */
@@ -34,6 +38,7 @@ export interface LoggerService {
   /**
    * Logs a debug.
    *
+   * @param {string} title - The title of the log.
    * @param {any[]} [params] - Additional parameters associated with the log (optional).
    * @returns {void}
    */

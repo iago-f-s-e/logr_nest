@@ -1,4 +1,12 @@
-import { ErrorContext } from '../../types';
+import { CatchExceptionOptions } from '../../types';
+
+export interface ErrorHandlingContext {
+  error: any;
+  target: any;
+  methodName: string;
+  args: any[];
+  options: CatchExceptionOptions;
+}
 
 export interface ErrorHandlingResult {
   shouldThrow: boolean;
@@ -7,5 +15,5 @@ export interface ErrorHandlingResult {
 }
 
 export interface ErrorHandlingStrategy {
-  handle(context: ErrorContext): ErrorHandlingResult;
+  handle(context: ErrorHandlingContext): ErrorHandlingResult;
 }

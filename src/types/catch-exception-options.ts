@@ -1,9 +1,16 @@
-import { ErrorHandlingType } from '../core';
+import { ErrorHandlingType, LogLevel } from '../core';
 
 /**
  * Configuration options for the CatchException decorator
  */
 export interface CatchExceptionOptions {
+  /**
+   * @description The level of logging to be used (optional).
+   *
+   * @type {LogLevel}
+   */
+  level?: LogLevel;
+
   /**
    * @description The kind of logging event (e.g., 'Application', 'Domain', 'Infra') (optional).
    *
@@ -74,23 +81,6 @@ export interface CatchExceptionOptions {
     context?: any,
     ...params: any[]
   ) => any | Promise<any>;
-
-  /**
-   * @description It allows you to provide a custom function to handle the registered exception, executing specific actions when an exception occurs. (optional).
-   *
-   * @overview does not work if "returnOnException" is provided
-   *
-   * @type {Function}
-   * @param {any} exception - The exception object.
-   * @param {any} context - The context associated with the exception.
-   * @param {any[]} ...params = All parameters in the same order as they were declared in method or function
-   * @returns {void | Promise<void>}
-   */
-  onException?: (
-    exception: any,
-    context?: any,
-    ...params: any[]
-  ) => void | Promise<void>;
 
   /**
    * @description If set to LOG, the exception will be logged. If set to REGISTER, the exception will be logged in the service to be logged in higher layers. (optional).

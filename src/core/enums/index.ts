@@ -1,3 +1,2 @@
-// Enums barrel exports
-export * from './log-level.enum.js';
-export * from './error-handling-type.enum.js';
+export * from './log-level.enum';
+export * from './error-handling-type.enum';

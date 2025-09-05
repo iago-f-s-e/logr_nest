@@ -1,12 +1,18 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { ErrorContext, LogContext } from '../../types';
+import { RegisteredError } from '../../types';
+
+export interface AsyncTrace {
+  readonly correlationId: string;
+  readonly causationId: string;
+  registeredError?: RegisteredError;
+}
 
 export class AsyncTraceStorage {
   private static instance: AsyncTraceStorage;
-  private als: AsyncLocalStorage<LogContext>;
+  private als: AsyncLocalStorage<AsyncTrace>;
 
   private constructor() {
-    this.als = new AsyncLocalStorage<LogContext>();
+    this.als = new AsyncLocalStorage<AsyncTrace>();
   }
 
   private static getInstance(): AsyncTraceStorage {
@@ -16,11 +22,11 @@ export class AsyncTraceStorage {
     return AsyncTraceStorage.instance;
   }
 
-  private static getStore(): LogContext | undefined {
+  private static getStore(): AsyncTrace | undefined {
     return AsyncTraceStorage.getInstance().als.getStore();
   }
 
-  public static run: AsyncLocalStorage<LogContext>['run'] =
+  public static run: AsyncLocalStorage<AsyncTrace>['run'] =
     AsyncTraceStorage.getInstance().als.run.bind(
       AsyncTraceStorage.getInstance().als,
     );
@@ -51,16 +57,16 @@ export class AsyncTraceStorage {
     }
   }
 
-  public static set registeredError(dto: ErrorContext) {
+  public static set registeredError(error: RegisteredError) {
     const store = AsyncTraceStorage.getStore();
     if (!store) return;
 
     if (!store.registeredError) {
-      (store as any).registeredError = dto;
+      (store as any).registeredError = error;
     }
   }
 
-  public static get registeredError(): ErrorContext | undefined {
+  public static get registeredError(): RegisteredError | undefined {
     return AsyncTraceStorage.getStore()?.registeredError;
   }
 

@@ -3,14 +3,6 @@
 ```
 src/
 ├── core/                                    # 🎯 Domain Layer (Business Logic)
-│   ├── entities/
-│   │   ├── log-context.entity.ts           # Interface do contexto de log
-│   │   ├── log-entry.entity.ts             # Entidade de entrada de log
-│   │   ├── error-info.entity.ts            # Informações de erro
-│   │   └── index.ts                        # Barrel exports
-│   ├── services/
-│   │   ├── logger.service.ts               # Serviço principal de logging
-│   │   └── index.ts
 │   ├── interfaces/
 │   │   ├── logger.interface.ts             # Contrato do logger
 │   │   ├── logger-service.interface.ts     # Contrato do service
@@ -20,16 +12,10 @@ src/
 │   │   ├── log-level.enum.ts              # Níveis de log
 │   │   ├── error-handling-type.enum.ts    # Tipos de error handling
 │   │   └── index.ts
-│   ├── builders/
-│   │   ├── catch-exception.builder.ts      # Builder para configuração
-│   │   └── index.ts
 │   ├── strategies/
 │   │   ├── register-error.strategy.ts      # Strategy para registrar erros
 │   │   ├── log-and-throw.strategy.ts       # Strategy para log + throw
 │   │   ├── suppress-error.strategy.ts      # Strategy para suprimir erros
-│   │   └── index.ts
-│   ├── validators/
-│   │   ├── catch-exception.validator.ts    # Validador de configurações
 │   │   └── index.ts
 │   └── helpers/
 │       ├── get-log-pattern.helper.ts       # Helper para pattern de log
@@ -55,6 +41,9 @@ src/
 │   │   └── index.ts
 │
 ├── application/                             # 🚀 Application Layer
+│   ├── services/
+│   │   ├── logger.service.ts               # Serviço principal de logging
+│   │   └── index.ts
 │   ├── decorators/
 │   │   ├── catch-exception.decorator.ts    # Decorator principal
 │   │   ├── log-method.decorator.ts         # Decorator para métodos
@@ -114,7 +103,6 @@ graph TB
     %% Application Layer
     CatchExceptionDecorator[CatchExceptionDecorator] --> LoggerService
     CatchExceptionDecorator --> CatchExceptionFactory[CatchExceptionFactory]
-    CatchExceptionDecorator --> CatchExceptionBuilder[CatchExceptionBuilder]
 
     %% Core Business Logic
     LoggerService --> LoggerInterface[Logger Interface]
@@ -123,7 +111,6 @@ graph TB
     LoggerService --> ErrorPatternHelper[ErrorPatternHelper]
 
     CatchExceptionFactory --> ErrorHandlingStrategy[ErrorHandlingStrategy]
-    CatchExceptionFactory --> CatchExceptionValidator[CatchExceptionValidator]
 
     ErrorHandlingStrategy --> RegisterErrorStrategy[RegisterErrorStrategy]
     ErrorHandlingStrategy --> LogAndThrowStrategy[LogAndThrowStrategy]
@@ -154,7 +141,7 @@ graph TB
 
     class App,LoggingModule,LoggingConfigModule,LoggerProvider,InterceptorProvider nestLayer
     class LoggerService,LoggingInterceptor,CatchExceptionDecorator appLayer
-    class LoggerInterface,ErrorHandlingStrategy,CatchExceptionBuilder,CatchExceptionValidator,LogPatternHelper,ErrorPatternHelper coreLayer
+    class LoggerInterface,ErrorHandlingStrategy,LogPatternHelper,ErrorPatternHelper coreLayer
     class AsyncTraceStorage,LoggerFactory,LoggerWinston,LostErrorMonitor,PerformanceMonitor,PluginSystem infraLayer
     class Winston,NodeAsyncHooks external
 ```
@@ -243,47 +230,6 @@ sequenceDiagram
 ```
 
 ## 📋 **Sprint Planning - Tasks Breakdown**
-
-### 🏃‍♂️ **Sprint 2: Core Services & Error Handling (10-12 dias)**
-
-#### **Epic 2.1: LoggerService Implementation**
-
-- **LGR-008** 🚀 Implement main LoggerService
-
-  - Estimativa: 3 dias
-  - Prioridade: Critical
-  - Dependências: LGR-004, LGR-007
-  - AC: LoggerService com todos os métodos (info, error, warn, debug)
-
-- **LGR-009** 🎯 Implement log pattern helpers
-  - Estimativa: 2 dias
-  - Prioridade: High
-  - Dependências: LGR-003
-  - AC: getLogPattern, getErrorPattern helpers funcionando
-
-#### **Epic 2.2: Error Handling Strategy System**
-
-- **LGR-010** 🎨 Implement Strategy Pattern for error handling
-
-  - Estimativa: 3 dias
-  - Prioridade: Critical
-  - Dependências: LGR-002
-  - AC: RegisterErrorStrategy, LogAndThrowStrategy implementadas
-
-- **LGR-011** 🏗️ Create CatchExceptionBuilder
-
-  - Estimativa: 2 dias
-  - Prioridade: High
-  - Dependências: LGR-010
-  - AC: Builder pattern com fluent interface funcionando
-
-- **LGR-012** 🔧 Implement CatchExceptionFactory
-  - Estimativa: 2 dias
-  - Prioridade: High
-  - Dependências: LGR-010, LGR-011
-  - AC: Factory criando handlers sync/async corretamente
-
----
 
 ### 🏃‍♂️ **Sprint 3: NestJS Integration & Decorators (8-10 dias)**
 

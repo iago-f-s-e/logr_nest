@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
+    // "experimentalDecorators": true,
+    // "emitDecoratorMetadata": true,
     "outDir": "./dist",
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
-    "inlineSources": true,
 
-    "target": "ES2020",
-    "module": "CommonJS",
-    "moduleResolution": "node",
+    // "target": "ES2020",
+    // "module": "CommonJS",
+    // "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
@@ -22,8 +22,19 @@
     "lib": ["ES2020"],
 
     "skipLibCheck": true,
-    "removeComments": false
+    "removeComments": false,
+
+
+    "target": "es6",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": false,
+    
+    "noEmitOnError": true,
+
   },
-  "include": ["src"],
+  "include": ["src", "src/examples"],
   "exclude": ["node_modules", "dist", "test", "**/*.spec.ts"]
 }
