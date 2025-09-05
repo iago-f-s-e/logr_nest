@@ -1,5 +1,3 @@
-Excelente! Vou criar toda a documentação estruturada para auxiliar na implementação. Como Staff Engineer, vou organizar isso de forma que facilite o desenvolvimento e manutenção futura.
-
 ## 📁 **Diagrama de Arquivos e Pastas**
 
 ```
@@ -112,48 +110,48 @@ graph TB
     LoggingInterceptor --> LoggerService
     LoggingInterceptor --> AsyncTraceStorage[AsyncTraceStorage]
     LoggerProvider --> LoggerService[LoggerService]
-    
+
     %% Application Layer
     CatchExceptionDecorator[CatchExceptionDecorator] --> LoggerService
     CatchExceptionDecorator --> CatchExceptionFactory[CatchExceptionFactory]
     CatchExceptionDecorator --> CatchExceptionBuilder[CatchExceptionBuilder]
-    
+
     %% Core Business Logic
     LoggerService --> LoggerInterface[Logger Interface]
     LoggerService --> AsyncTraceStorage
     LoggerService --> LogPatternHelper[LogPatternHelper]
     LoggerService --> ErrorPatternHelper[ErrorPatternHelper]
-    
+
     CatchExceptionFactory --> ErrorHandlingStrategy[ErrorHandlingStrategy]
     CatchExceptionFactory --> CatchExceptionValidator[CatchExceptionValidator]
-    
+
     ErrorHandlingStrategy --> RegisterErrorStrategy[RegisterErrorStrategy]
     ErrorHandlingStrategy --> LogAndThrowStrategy[LogAndThrowStrategy]
     ErrorHandlingStrategy --> SuppressErrorStrategy[SuppressErrorStrategy]
-    
+
     RegisterErrorStrategy --> AsyncTraceStorage
     LogAndThrowStrategy --> LoggerService
-    
+
     %% Infrastructure Layer
     LoggerInterface --> LoggerFactory[LoggerFactory]
     LoggerFactory --> LoggerWinston[LoggerWinston]
     LoggerFactory --> LoggerConsole[LoggerConsole]
-    
+
     LoggerWinston --> WinstonConfig[WinstonConfig]
     LoggerWinston --> JsonFormatter[JsonFormatter]
     LoggerWinston --> PrettyFormatter[PrettyFormatter]
-    
+
     %% External Dependencies
     LoggerWinston --> Winston[Winston Library]
     AsyncTraceStorage --> NodeAsyncHooks[Node.js async_hooks]
-    
+
     %% Style classes
     classDef nestLayer fill:#e1f5fe
     classDef appLayer fill:#f3e5f5
     classDef coreLayer fill:#e8f5e8
     classDef infraLayer fill:#fff3e0
     classDef external fill:#ffebee
-    
+
     class App,LoggingModule,LoggingConfigModule,LoggerProvider,InterceptorProvider nestLayer
     class LoggerService,LoggingInterceptor,CatchExceptionDecorator appLayer
     class LoggerInterface,ErrorHandlingStrategy,CatchExceptionBuilder,CatchExceptionValidator,LogPatternHelper,ErrorPatternHelper coreLayer
@@ -179,22 +177,22 @@ sequenceDiagram
     %% Request Start
     Client->>NestApp: HTTP Request
     NestApp->>Interceptor: intercept()
-    
+
     %% Context Setup
     Interceptor->>Interceptor: Extract/Generate trace IDs
     Interceptor->>AsyncStorage: run(logContext, callback)
     Note over AsyncStorage: Store: correlationId, causationId
-    
+
     %% Request Logging
     Interceptor->>Logger: info("Request started")
     Logger->>AsyncStorage: getContext()
     Logger->>Logger: buildLogPattern()
     Logger->>Winston: log(pattern)
-    
+
     %% Controller Execution
     Interceptor->>Controller: handle request
     Controller->>Service: business logic
-    
+
     %% Happy Path
     alt Success Case
         Service-->>Controller: result
@@ -202,14 +200,14 @@ sequenceDiagram
         Interceptor->>Logger: info("Request completed")
         Logger->>Winston: log(success pattern)
         Interceptor-->>Client: HTTP Response
-    
+
     %% Error Path
     else Error Case
         Service->>Decorator: method throws error
-        
+
         %% Decorator Processing
         Decorator->>Strategy: handle(errorContext)
-        
+
         alt Register Strategy
             Strategy->>AsyncStorage: set registeredError
             Strategy-->>Service: throw/return based on config
@@ -222,20 +220,20 @@ sequenceDiagram
             Strategy->>Logger: warn(suppressedError)
             Strategy-->>Service: return fallback value
         end
-        
+
         %% Back to Interceptor
         Service-->>Interceptor: error/result
-        
+
         %% Interceptor Error Handling
         Interceptor->>AsyncStorage: get registeredError
-        
+
         alt Has Registered Error
             Interceptor->>Logger: error("Handled exception", registeredError)
             Interceptor->>AsyncStorage: clearRegisteredError()
-        else Unhandled Error  
+        else Unhandled Error
             Interceptor->>Logger: error("Unhandled exception", error)
         end
-        
+
         Interceptor->>Winston: log(final error pattern)
         Interceptor-->>Client: HTTP Error Response
     end
@@ -246,59 +244,12 @@ sequenceDiagram
 
 ## 📋 **Sprint Planning - Tasks Breakdown**
 
-### 🏃‍♂️ **Sprint 1: Foundation & Core Architecture (8-10 dias)**
-
-#### **Epic 1.1: Core Domain Setup**
-- **LGR-001** 📝 Setup project structure and dependencies
-  - Estimativa: 1 dia
-  - Prioridade: Critical
-  - Dependências: None
-  - AC: Estrutura de pastas criada, package.json configurado
-
-- **LGR-002** 🎯 Create core entities and interfaces
-  - Estimativa: 2 dias  
-  - Prioridade: High
-  - Dependências: LGR-001
-  - AC: LogContext, LogEntry, ErrorInfo entities + interfaces criadas
-
-- **LGR-003** 📊 Implement DTOs and types
-  - Estimativa: 1 dia
-  - Prioridade: High
-  - Dependências: LGR-002
-  - AC: LogPatternDTO, ErrorPatternDTO, TriggerDTO implementados
-
-#### **Epic 1.2: AsyncLocalStorage Foundation**
-- **LGR-004** 🔄 Implement AsyncTraceStorage service
-  - Estimativa: 2 dias
-  - Prioridade: Critical
-  - Dependências: LGR-002
-  - AC: AsyncTraceStorage com getters/setters funcionando
-
-- **LGR-005** 🧪 Unit tests for AsyncTraceStorage
-  - Estimativa: 1 dia
-  - Prioridade: High
-  - Dependências: LGR-004
-  - AC: 90%+ coverage no AsyncTraceStorage
-
-#### **Epic 1.3: Logger Infrastructure**
-- **LGR-006** 🏭 Create LoggerFactory and base interfaces
-  - Estimativa: 1 dia
-  - Prioridade: High
-  - Dependências: LGR-002
-  - AC: LoggerFactory com createWinston() funcionando
-
-- **LGR-007** 🎨 Implement Winston adapter
-  - Estimativa: 2 dias
-  - Prioridade: Critical  
-  - Dependências: LGR-006
-  - AC: LoggerWinston com formatters dev/prod
-
----
-
 ### 🏃‍♂️ **Sprint 2: Core Services & Error Handling (10-12 dias)**
 
 #### **Epic 2.1: LoggerService Implementation**
+
 - **LGR-008** 🚀 Implement main LoggerService
+
   - Estimativa: 3 dias
   - Prioridade: Critical
   - Dependências: LGR-004, LGR-007
@@ -311,13 +262,16 @@ sequenceDiagram
   - AC: getLogPattern, getErrorPattern helpers funcionando
 
 #### **Epic 2.2: Error Handling Strategy System**
+
 - **LGR-010** 🎨 Implement Strategy Pattern for error handling
+
   - Estimativa: 3 dias
   - Prioridade: Critical
   - Dependências: LGR-002
   - AC: RegisterErrorStrategy, LogAndThrowStrategy implementadas
 
 - **LGR-011** 🏗️ Create CatchExceptionBuilder
+
   - Estimativa: 2 dias
   - Prioridade: High
   - Dependências: LGR-010
@@ -334,7 +288,9 @@ sequenceDiagram
 ### 🏃‍♂️ **Sprint 3: NestJS Integration & Decorators (8-10 dias)**
 
 #### **Epic 3.1: NestJS Interceptor**
+
 - **LGR-013** 🎪 Implement configurable LoggingInterceptor
+
   - Estimativa: 4 dias
   - Prioridade: Critical
   - Dependências: LGR-008, LGR-004
@@ -347,7 +303,9 @@ sequenceDiagram
   - AC: Tests E2E do interceptor com diferentes configurações
 
 #### **Epic 3.2: Exception Decorator**
+
 - **LGR-015** 🎭 Implement @CatchException decorator
+
   - Estimativa: 3 dias
   - Prioridade: Critical
   - Dependências: LGR-012
@@ -364,7 +322,9 @@ sequenceDiagram
 ### 🏃‍♂️ **Sprint 5: NestJS Modules & Integration (5-7 dias)**
 
 #### **Epic 5.1: NestJS Modules**
+
 - **LGR-021** 🏠 Create LoggingModule with providers
+
   - Estimativa: 3 dias
   - Prioridade: Critical
   - Dependências: LGR-013, LGR-015
@@ -377,6 +337,7 @@ sequenceDiagram
   - AC: Configuração dinâmica do módulo funcionando
 
 #### **Epic 5.2: Final Integration**
+
 - **LGR-023** 🔗 Integration tests E2E complete flow
   - Estimativa: 2 dias
   - Prioridade: High
@@ -388,6 +349,7 @@ sequenceDiagram
 ### 🏃‍♂️ **Sprint 6: Documentation (4-5 dias)**
 
 #### **Epic 6.2: Documentation**
+
 - **LGR-025** 📚 Complete API documentation
   - Estimativa: 2 dias
   - Prioridade: High

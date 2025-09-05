@@ -22,6 +22,9 @@
       "a11y": {
         "useKeyWithClickEvents": "off",
         "noSvgWithoutTitle": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "off"
       }
     }
   },
