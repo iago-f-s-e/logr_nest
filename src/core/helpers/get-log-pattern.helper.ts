@@ -1,14 +1,19 @@
-import type { LogPattern, TriggerIn } from '../../types';
-import { LogLevel } from '../enums';
+import type { ErrorPattern, LogPattern, TriggerIn } from '../../types';
 
-export function getLogPattern(
-  trigger: TriggerIn,
-  message: string,
-  level: LogLevel,
-  ...params: any[]
-): LogPattern {
-  return {
-    level,
+type LogPatternParams = {
+  trigger: TriggerIn;
+  message: string;
+  error?: any;
+  params?: any[];
+};
+
+export function getLogPattern({
+  trigger,
+  message,
+  error,
+  params = [],
+}: LogPatternParams): LogPattern | ErrorPattern {
+  const logPattern: LogPattern = {
     message,
     timestamp: new Date().toISOString(),
     trigger: {
@@ -22,4 +27,20 @@ export function getLogPattern(
       },
     },
   };
+
+  if (!error) {
+    return logPattern;
+  }
+
+  const errorPattern: ErrorPattern = {
+    ...logPattern,
+    error: {
+      kind: trigger.kind ?? 'Missing kind',
+      message: error.message,
+      stack: error.stack,
+      name: error.name ?? 'Missing name',
+    },
+  };
+
+  return errorPattern;
 }

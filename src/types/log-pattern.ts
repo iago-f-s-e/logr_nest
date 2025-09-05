@@ -1,8 +1,6 @@
-import { LogLevel } from '../core';
 import { TriggerOut } from './trigger';
 
 export interface LogPattern {
-  level: LogLevel;
   /**
    * The timestamp when the log was generated.
    *

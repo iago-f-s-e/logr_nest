@@ -1,4 +1,5 @@
 import { AsyncTraceStorage } from '../../infrastructure/context';
+import { LogLevel } from '../enums';
 import {
   ErrorHandlingContext,
   ErrorHandlingResult,
@@ -12,6 +13,7 @@ export class RegisterErrorStrategy
 {
   public handle(context: ErrorHandlingContext): ErrorHandlingResult {
     const registeredError = {
+      level: context.options.level ?? LogLevel.ERROR,
       error: context.error,
       trigger: this.buildTrigger(context),
       title: this.buildTitle(context),

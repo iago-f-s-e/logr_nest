@@ -6,6 +6,7 @@ import {
 import {
   DEFAULT_ERROR_HANDLING_TYPE,
   ErrorHandlingType,
+  LogLevel,
 } from '../../core/enums';
 import {
   ErrorHandlingStrategy,
@@ -16,6 +17,7 @@ import { CatchExceptionOptions } from '../../types';
 import { LoggerService } from '../services';
 
 const defaultOptions: CatchExceptionOptions = {
+  level: LogLevel.ERROR,
   typeErrorHandling: DEFAULT_ERROR_HANDLING_TYPE,
   bubbleException: true,
   isSync: false,
@@ -30,7 +32,7 @@ export function CatchException(
     _target: any,
     _methodName: string,
     descriptor: PropertyDescriptor,
-  ): void => {
+  ): PropertyDescriptor => {
     const originalMethod = descriptor.value;
 
     const options = {
@@ -55,6 +57,8 @@ export function CatchException(
     descriptor.value = handler.wrapMethod(originalMethod);
 
     persistsMetadata(descriptor.value, originalMethod);
+
+    return descriptor;
   };
 }
 

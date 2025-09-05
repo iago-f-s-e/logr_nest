@@ -49,10 +49,10 @@ export class LogErrorStrategy
 
     const title = this.buildTitle(context);
 
-    this.logger.error(
-      context.error,
+    this.logger.log(
       title,
-      context.options.level || LogLevel.ERROR,
+      context.options.level ?? LogLevel.ERROR,
+      context.error,
       ...this.buildParams(context),
     );
   }

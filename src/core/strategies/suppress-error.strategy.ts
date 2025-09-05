@@ -10,22 +10,21 @@ export class SuppressErrorStrategy
   implements ErrorHandlingStrategy
 {
   public handle(context: ErrorHandlingContext): ErrorHandlingResult {
+    let returnValue: any;
+
     if (context.options.returnOnException) {
       const args = context.args || [];
-      return {
-        shouldThrow: false,
-        returnValue: context.options.returnOnException.call(
-          context.target,
-          context.error,
-          context.target,
-          ...args,
-        ),
-      };
+      returnValue = context.options.returnOnException.call(
+        context.target,
+        context.error,
+        context.target,
+        ...args,
+      );
     }
 
     return {
       shouldThrow: false,
-      returnValue: undefined,
+      returnValue,
     };
   }
 }

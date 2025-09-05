@@ -30,7 +30,7 @@ export interface Logger {
    * @param {ErrorPattern} error - The error pattern to be logged.
    * @returns {void}
    */
-  error(error: ErrorPattern, title?: string): void;
+  error(error: ErrorPattern): void;
 
   /**
    * Logs a debug.

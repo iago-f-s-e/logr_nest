@@ -1,3 +1,4 @@
+import { LogLevel } from '../core';
 import { LogPattern } from './log-pattern';
 import { TriggerIn } from './trigger';
 
@@ -45,6 +46,7 @@ export interface ErrorPattern extends LogPattern {
 }
 
 export interface RegisteredError {
+  level: LogLevel;
   error: any;
   trigger: TriggerIn;
   title: string;

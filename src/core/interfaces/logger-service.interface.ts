@@ -8,6 +8,22 @@ import { LogLevel } from '../enums';
  */
 export interface LoggerService {
   /**
+   * Logs a message.
+   *
+   * @param {string} title - The title of the log.
+   * @param {LogLevel} level - The level of the log.
+   * @param {any} error - The error object to be logged.
+   * @param {any[]} [params] - Additional parameters associated with the log (optional).
+   * @returns {void}
+   */
+  log(
+    title: string,
+    level: LogLevel,
+    error: any | null,
+    ...params: any[]
+  ): void;
+
+  /**
    * Logs an error.
    *
    * @param {any} error - The error object to be logged.
@@ -15,7 +31,7 @@ export interface LoggerService {
    * @param {any[]} [params] - Additional parameters associated with the error (optional).
    * @returns {void}
    */
-  error(error: any, title: string, level: LogLevel, ...params: any[]): void;
+  error(error: any, title?: string, ...params: any[]): void;
 
   /**
    * Logs an info.
